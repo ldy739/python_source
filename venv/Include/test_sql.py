@@ -1,6 +1,6 @@
 # coding:utf-8
-import Include.configDB as Mysql_Db
-import Include.public_method as public_method
+import configDB as Mysql_Db
+import public_method as public_method
 import time,datetime
 
 v5_sqlMapper=Mysql_Db.Mysql('DATABASE_1')

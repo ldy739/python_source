@@ -1,5 +1,5 @@
-import Include.configDB as Mysql_Db
-import Include.public_method as public_method
+import configDB as Mysql_Db
+import public_method as public_method
 v4_sqlMapper=Mysql_Db.Mysql('DATABASE_2')
 v5_sqlMapper=Mysql_Db.Mysql('DATABASE_1')
 # v4数据库名
@@ -39,11 +39,11 @@ try:
         # 执行插入新站点数据
         newId = v5_sqlMapper.insert_id(sqls)
         # 行数据插入信息记录
-        public_method.insert_conversion(newId, id, 'public_web_config', 'webconfig', new_database, old_database)
+        v5_sqlMapper.insert(public_method.insert_conversion(newId, id, 'public_web_config', 'webconfig', new_database, old_database))
         sqls = "INSERT INTO public_configuration_item (configuration_id, config_mode, status, web_id) select id,config_mode,if(resource_id is null,0,1)," + str(newId) + " from public_configuration WHERE config_mode = 'channel_type';"
         # 插入站点字典资源数据并记录插入条数
         insert_count = v5_sqlMapper.insert(sqls)
-        public_method.insert_tables('public_configuration_item', '', new_database, old_database, insert_count)
+        v5_sqlMapper.insert(public_method.insert_tables('public_configuration_item', '', new_database, old_database, insert_count))
 
         # 插入站点配置表
         sqls = "INSERT INTO public_config_mode (code, int_value, string_value,type, info, web_id, user_id, user_name, status, date_time, modular,hid,ability,param_info) " + \
@@ -58,19 +58,19 @@ try:
                "SELECT  field_name, field_english_name, field_type, field_value, required, enable, initial, " + str(
             newId) + ", -100, create_time, parentid, display_field_name,is_number,is_english,is_chinese,is_char,max_input,is_query_condition FROM basic_leave_message_config  WHERE web_id =-1 AND initial = 1;"
         insert_count = v5_sqlMapper.insert(sqls)
-        public_method.insert_tables('basic_leave_message_config', '', new_database, old_database, insert_count)
+        v5_sqlMapper.insert(public_method.insert_tables('basic_leave_message_config', '', new_database, old_database, insert_count))
 
         # 添加站点对应系统配置信息license_sys
         sqls = "INSERT INTO public_web_sys (web_id, sys_id)VALUES(" + str(newId) + ",1),(" + str(newId) + ",2),(" + str(
             newId) + ",3);"
         insert_count = v5_sqlMapper.insert(sqls)
-        public_method.insert_tables('public_web_sys', '', new_database, old_database, insert_count)
+        v5_sqlMapper.insert(public_method.insert_tables('public_web_sys', '', new_database, old_database, insert_count))
 
         # 添加站点答案类型回复形式配置项
         sqls = "INSERT INTO public_configuration_item (configuration_id, config_mode, status, web_id) select id,config_mode,status," + str(
             newId) + " from public_configuration where config_mode in('answer_type','visitor_field','customer_service_type','customer_extract');"
         insert_count = v5_sqlMapper.insert(sqls)
-        public_method.insert_tables('public_configuration_item', '', new_database, old_database, insert_count)
+        v5_sqlMapper.insert(public_method.insert_tables('public_configuration_item', '', new_database, old_database, insert_count))
 
         # 添加默认配置项参数
         sqls = "INSERT INTO public_config_mode (code, int_value, string_value,type, info, web_id, user_id, user_name, status, date_time, modular,hid,ability,param_info)" + \
@@ -84,7 +84,7 @@ try:
                "'conf.scene.jump.out.mode', 'conf.language.config.mode', 'conf.scene.intent.identify.ratio', 'conf.unknown.judge.no.match.word'," + \
                "'switch.applet.voice.recognition', 'switch.smart.knowledge', 'conf.search.help.first.spell', 'plant.data.chat');"
         insert_count = v5_sqlMapper.insert(sqls)
-        public_method.insert_tables('public_config_mode', '', new_database, old_database, insert_count)
+        v5_sqlMapper.insert(public_method.insert_tables('public_config_mode', '', new_database, old_database, insert_count))
 
         # 关闭生效角色的配置
         sqls = "update public_config_mode set status=1 where code='switch.question.effextive.roles' and web_id=" + str(
@@ -107,7 +107,7 @@ try:
                 web_utelNum) + "',null,'" + str(web_utelNum) + "'),1,sysdate()," + "'" + web_uname + "'," + str(
                 newId) + ",1)"
             new_uid = v5_sqlMapper.insert_id(sqls)
-            public_method.insert_conversion(new_uid, web_uid, 'public_user', 'robot_user', new_database, old_database)
+            v5_sqlMapper.insert(public_method.insert_conversion(new_uid, web_uid, 'public_user', 'robot_user', new_database, old_database))
             # 站点用户角色添加
             sqls = "INSERT INTO public_user_role(user_id, role_id) VALUES (" + str(new_uid) + ", '-4');"
             insert_count = v5_sqlMapper.insert(sqls)
@@ -126,12 +126,12 @@ try:
                    "250201,250202,250203,250204,250205,17010101,17010103,17010108,17010109,17010208,17010209,17010301,17010303,17010401,17010403,17010501,17010503,17020101," + \
                    "17030101,17030103,17030201,17030203,18080101,18080102,19030491,24010201,24010202,24010203,24010204,24010237,1205020320);"
             insert_resourceCount = v5_sqlMapper.insert(sqls)
-            public_method.insert_tables('public_role_resource', '', new_database, old_database, insert_resourceCount)
+            v5_sqlMapper.insert(public_method.insert_tables('public_role_resource', '', new_database, old_database, insert_resourceCount))
             # 添加角色权限分类信息
             sqls = "INSERT INTO public_role_classes (role_id, classes_id)VALUES (" + str(newRoleId) + ", 0) , (" + str(
                 newRoleId) + ", -100) , (" + str(newRoleId) + ", -200) , (" + str(newRoleId) + ", -300);"
             insert_classesCount = v5_sqlMapper.insert(sqls)
-            public_method.insert_tables('public_role_classes', '', new_database, old_database, insert_classesCount)
+            v5_sqlMapper.insert(public_method.insert_tables('public_role_classes', '', new_database, old_database, insert_classesCount))
             # 进行站点子用户操作
             sqls = "select id,userName,email,telNum,name from robot_user where webId=" + str(
                 id) + " and userName is not null and userName !='' and userLevel=2 and status=0 and del=0"
@@ -170,15 +170,15 @@ try:
                     son_utelNum) + "',null,'" + str(son_utelNum) + "'),1,sysdate()," + "'" + son_uname + "'," + str(
                     newId) + ",2," + str(new_uid) + ")"
                 new_son_uid = v5_sqlMapper.insert_id(sqls)
-                public_method.insert_conversion(new_son_uid, son_uid, 'public_user', 'robot_user', new_database,
-                                                old_database)
+                v5_sqlMapper.insert(public_method.insert_conversion(new_son_uid, son_uid, 'public_user', 'robot_user', new_database,
+                                                old_database))
                 # 站点用户角色添加
                 sqls = "INSERT INTO public_user_role(user_id, role_id) VALUES (" + str(new_son_uid) + ", " + str(
                     newRoleId) + ");"
                 v5_sqlMapper.insert(sqls)
 
     # 数据表插入记录
-    public_method.insert_tables('public_web_config', 'webconfig', new_database, old_database, count)
+    v5_sqlMapper.insert(public_method.insert_tables('public_web_config', 'webconfig', new_database, old_database, count))
     v4_sqlMapper.dispose()
     v5_sqlMapper.dispose()
 except BaseException as e:

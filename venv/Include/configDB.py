@@ -6,7 +6,7 @@
 """
 import pymysql
 from DBUtils.PooledDB import PooledDB
-from Include import readConfig
+import readConfig
 
 config = readConfig.ReadConfig()  # 实例化
 default_database=config.get_config('default_source')#默认数据源
@@ -131,7 +131,7 @@ class Mysql(object):
         if param is None:
             count = self._cursor.execute(sql)
         else:
-            count = self._cursor.execute(sql, param)
+            count = self._cursor.execute(sql)
         return count
 
     def update(self, sql, param=None):
